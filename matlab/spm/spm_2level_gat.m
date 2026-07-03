@@ -250,7 +250,7 @@ function [peakTable, T] = spm_2level_gat(train_subject_ids, sphere_radius, outpu
     T          = table2struct(T, 'ToScalar', true);
     T.Subject  = cellstr(T.Subject);
 
-    flag = 0; %#ok<NASGU>
+    flag = 0; 
     cd(current_folder);
     save(fullfile(output_dir, 'results.mat'), 'flag', 'peakTable', 'T');
 end
@@ -258,7 +258,7 @@ end
 
 function [peakTable, T] = save_empty(current_folder, output_dir)
 % Write an empty results file with flag = 1 so the Python side skips the fold.
-    flag = 1; peakTable = []; T = []; %#ok<NASGU>
+    flag = 1; peakTable = []; T = []; 
     cd(current_folder);
     save(fullfile(output_dir, 'results.mat'), 'flag', 'peakTable', 'T');
 end

@@ -1,11 +1,11 @@
-function gmv_wmv_calc()
-% GMV_WMV_CALC  Modulate and reslice grey/white-matter tissue maps.
+function gmd_wmd_calc()
+% GMD_WMD_CALC  Modulate and reslice grey/white-matter tissue maps.
 %
 %   For every subject this:
 %     1. Computes the Jacobian of the SPM deformation field (y_*.nii).
 %     2. Modulates the native-space tissue segments (wc1 -> mwc1, wc2 -> mwc2).
 %     3. Reslices the modulated and unmodulated maps to a common reference space.
-%     4. Writes Resliced_GMV_*.nii / Resliced_WMV_*.nii into each subject folder
+%     4. Writes Resliced_GMD_*.nii / Resliced_WMD_*.nii into each subject folder
 %        (consumed by roi_effectsize).
 %
 %   Expects, per subject, the SPM segmentation outputs wc1c*, wc2c* and y_c* in
@@ -80,15 +80,15 @@ function gmv_wmv_calc()
         spm_reslice(char(ref_image, wc2_file), flags);
 
         % --- Rename resliced outputs into the subject folder -------------
-        move_resliced(anat_dir, mwc1_file, subj_dir, ['Resliced_GMV_mwc1_' subject_id '.nii']);
-        move_resliced(anat_dir, mwc2_file, subj_dir, ['Resliced_WMV_mwc2_' subject_id '.nii']);
-        move_resliced(anat_dir, wc1_file,  subj_dir, ['Resliced_GMV_wc1_'  subject_id '.nii']);
-        move_resliced(anat_dir, wc2_file,  subj_dir, ['Resliced_WMV_wc2_'  subject_id '.nii']);
+        move_resliced(anat_dir, mwc1_file, subj_dir, ['Resliced_GMD_mwc1_' subject_id '.nii']);
+        move_resliced(anat_dir, mwc2_file, subj_dir, ['Resliced_WMD_mwc2_' subject_id '.nii']);
+        move_resliced(anat_dir, wc1_file,  subj_dir, ['Resliced_GMD_wc1_'  subject_id '.nii']);
+        move_resliced(anat_dir, wc2_file,  subj_dir, ['Resliced_WMD_wc2_'  subject_id '.nii']);
 
         % --- Sanity check ------------------------------------------------
-        gmv = sum(spm_read_vols(spm_vol(mwc1_file)), 'all', 'omitnan') / 1000;
-        wmv = sum(spm_read_vols(spm_vol(mwc2_file)), 'all', 'omitnan') / 1000;
-        fprintf('%s - GMV: %.1f mL | WMV: %.1f mL\n', subject_id, gmv, wmv);
+        gmd = sum(spm_read_vols(spm_vol(mwc1_file)), 'all', 'omitnan') / 1000;
+        wmd = sum(spm_read_vols(spm_vol(mwc2_file)), 'all', 'omitnan') / 1000;
+        fprintf('%s - GMD: %.1f mL | WMD: %.1f mL\n', subject_id, gmd, wmd);
     end
 
     disp('=== All done ===');

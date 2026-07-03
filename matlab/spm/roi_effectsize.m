@@ -4,18 +4,18 @@ function newTable = roi_effectsize(roi_labels_all)
 %   newTable = ROI_EFFECTSIZE(ROI_LABELS_ALL) loops over every subject and, for
 %   each ROI in ROI_LABELS_ALL, extracts:
 %       * the mean first-level contrast value (effect size),
-%       * mean grey-matter volume (GMV) and white-matter volume (WMV),
+%       * mean grey-matter density (GMD) and white-matter density (WMD),
 %   then merges these with the subject's behavioural metrics and demographics.
 %
 %   The result is one row per subject, with behavioural columns plus struct
-%   columns (EffectSize, GMV, WMV, Demographics, Behavior) holding ROI-wise and
+%   columns (EffectSize, GMD, WMD, Demographics, Behavior) holding ROI-wise and
 %   subject-level values, ready to be consumed by the Python pipeline.
 
     cfg = gat_config();
     first_level_dir   = cfg.first_level_dir;
     output_dir        = cfg.subjects_rois_dir;
     behavioural_dir   = cfg.behavioural_dir;
-    gmv_base_path     = cfg.participants_data;
+    gmd_base_path     = cfg.participants_data;
     contrast_name     = cfg.contrast_name;
 
     load(cfg.demographics_mat);  % provides 'demo' table (ID, SEX, EDU, AGE)
@@ -60,24 +60,24 @@ function newTable = roi_effectsize(roi_labels_all)
             warning('Dimension mismatch: %s', subject_id); continue;
         end
 
-        % --- GMV / WMV images (subject id without analysis suffix) --------
+        % --- GMD / WMD images (subject id without analysis suffix) --------
         subject_id2 = regexprep(subject_id, '_[A-Za-z]+$', '');
-        gmv_file = fullfile(gmv_base_path, subject_id2, ...
-                            ['Resliced_GMV_mwc1_' subject_id2 '.nii']);
-        wmv_file = fullfile(gmv_base_path, subject_id2, ...
-                            ['Resliced_WMV_mwc2_' subject_id2 '.nii']);
+        gmd_file = fullfile(gmd_base_path, subject_id2, ...
+                            ['Resliced_GMD_wc1_' subject_id2 '.nii']);
+        wmd_file = fullfile(gmd_base_path, subject_id2, ...
+                            ['Resliced_WMD_wc2_' subject_id2 '.nii']);
 
-        if ~exist(gmv_file, 'file')
-            warning('Missing GMV file: %s', gmv_file); continue;
+        if ~exist(gmd_file, 'file')
+            warning('Missing GMD file: %s', gmd_file); continue;
         end
-        if ~exist(wmv_file, 'file')
-            warning('Missing WMV file: %s', wmv_file); continue;
+        if ~exist(wmd_file, 'file')
+            warning('Missing WMD file: %s', wmd_file); continue;
         end
 
-        V_gmv = spm_vol(gmv_file);  Y_gmv = spm_read_vols(V_gmv);
-        V_wmv = spm_vol(wmv_file);  Y_wmv = spm_read_vols(V_wmv);
+        V_gmd = spm_vol(gmd_file);  Y_gmd = spm_read_vols(V_gmd);
+        V_wmd = spm_vol(wmd_file);  Y_wmd = spm_read_vols(V_wmd);
 
-        if ~isequal(size(Y_mask), size(Y_gmv)) || ~isequal(size(Y_mask), size(Y_wmv))
+        if ~isequal(size(Y_mask), size(Y_gmd)) || ~isequal(size(Y_mask), size(Y_wmd))
             warning('Mask / tissue image size mismatch: %s', subject_id); continue;
         end
 
@@ -90,25 +90,25 @@ function newTable = roi_effectsize(roi_labels_all)
                 mean_effect_size = mean(roi_vals(~isnan(roi_vals)), 'omitnan');
                 if isnan(mean_effect_size); mean_effect_size = 0; end
 
-                gmv_vals  = Y_gmv(roi_mask);
-                total_gmv = mean(gmv_vals(~isnan(gmv_vals)), 'omitnan');
-                if isempty(gmv_vals(~isnan(gmv_vals))); total_gmv = 0; end
+                gmd_vals  = Y_gmd(roi_mask);
+                total_gmd = mean(gmd_vals(~isnan(gmd_vals)), 'omitnan');
+                if isempty(gmd_vals(~isnan(gmd_vals))); total_gmd = 0; end
 
-                wmv_vals  = Y_wmv(roi_mask);
-                total_wmv = mean(wmv_vals(~isnan(wmv_vals)), 'omitnan');
-                if isempty(wmv_vals(~isnan(wmv_vals))); total_wmv = 0; end
+                wmd_vals  = Y_wmd(roi_mask);
+                total_wmd = mean(wmd_vals(~isnan(wmd_vals)), 'omitnan');
+                if isempty(wmd_vals(~isnan(wmd_vals))); total_wmd = 0; end
             else
                 warning('ROI %d not found in subject %s. Assigning zeros.', ...
                         roi_label, subject_id);
                 mean_effect_size = 0;
-                total_gmv        = 0;
-                total_wmv        = 0;
+                total_gmd        = 0;
+                total_wmd        = 0;
             end
 
             new_entry = table({subject_id}, roi_label, mean_effect_size, ...
-                              total_gmv, total_wmv, ...
+                              total_gmd, total_wmd, ...
                               'VariableNames', {'Subject', 'ROI_Label', ...
-                                                'MeanEffectSize', 'GMV', 'WMV'});
+                                                'MeanEffectSize', 'GMD', 'WMD'});
             roi_effect_size_table = [roi_effect_size_table; new_entry]; %#ok<AGROW>
         end
 
@@ -155,7 +155,7 @@ function newTable = roi_effectsize(roi_labels_all)
     newTable.Subject = subjects;
 
     metric_columns = setdiff(merged_data.Properties.VariableNames, ...
-        {'ROI_Label', 'ZScoredEffectSize', 'Subject', 'MeanEffectSize', 'GMV', 'WMV'});
+        {'ROI_Label', 'ZScoredEffectSize', 'Subject', 'MeanEffectSize', 'GMD', 'WMD'});
 
     for m = 1:numel(metric_columns)
         col = metric_columns{m};
@@ -165,8 +165,8 @@ function newTable = roi_effectsize(roi_labels_all)
 
     % --- Build per-subject structs -----------------------------------
     EffectSizeStructs = cell(length(subjects), 1);
-    GMVStructs        = cell(length(subjects), 1);
-    WMVStructs        = cell(length(subjects), 1);
+    GMDStructs        = cell(length(subjects), 1);
+    WMDStructs        = cell(length(subjects), 1);
     Demographics      = cell(length(subjects), 1);
     BehaviorStructs   = cell(length(subjects), 1);
 
@@ -187,13 +187,13 @@ function newTable = roi_effectsize(roi_labels_all)
         demo_struct.EDU = demo.EDU(subj_idx);
 
         eff_struct = struct();
-        gmv_struct = struct();
-        wmv_struct = struct();
+        gmd_struct = struct();
+        wmd_struct = struct();
         for r = 1:height(subj_data)
             roi_name = sprintf('ROI_%d', subj_data.ROI_Label(r));
             eff_struct.(roi_name) = subj_data.MeanEffectSize(r);
-            gmv_struct.(roi_name) = subj_data.GMV(r);
-            wmv_struct.(roi_name) = subj_data.WMV(r);
+            gmd_struct.(roi_name) = subj_data.GMD(r);
+            wmd_struct.(roi_name) = subj_data.WMD(r);
         end
 
         beh_struct = struct();
@@ -203,15 +203,15 @@ function newTable = roi_effectsize(roi_labels_all)
         end
 
         EffectSizeStructs{i} = eff_struct;
-        GMVStructs{i}        = gmv_struct;
-        WMVStructs{i}        = wmv_struct;
+        GMDStructs{i}        = gmd_struct;
+        WMDStructs{i}        = wmd_struct;
         Demographics{i}      = demo_struct;
         BehaviorStructs{i}   = beh_struct;
     end
 
     newTable.EffectSize   = EffectSizeStructs;
-    newTable.GMV          = GMVStructs;
-    newTable.WMV          = WMVStructs;
+    newTable.GMD          = GMDStructs;
+    newTable.WMD          = WMDStructs;
     newTable.Demographics = Demographics;
     newTable.Behavior     = BehaviorStructs;
 
