@@ -64,7 +64,7 @@ function reho_calculation()
         mean_reho  = mean(reho_vals, 'omitnan');
         std_reho   = std(reho_vals, 'omitnan');
 
-        reho_z = nan(size(reho_map)); %#ok<NASGU>
+        reho_z = nan(size(reho_map)); 
         if std_reho == 0
             reho_z = zeros(size(reho_map));
         else

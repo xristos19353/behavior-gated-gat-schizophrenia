@@ -79,9 +79,9 @@ function [peakTable, T] = spm_2level_gat(train_subject_ids, sphere_radius, outpu
         subject_numeric = regexprep(subject_id, '_[A-Za-z]+$', '');
         is_sz = startsWith(subject_numeric, 'sub-3') || startsWith(subject_numeric, 'sub-4');
         if is_sz
-            group1_scans{end+1} = contrast_img; %#ok<AGROW>
+            group1_scans{end+1} = contrast_img; 
         else
-            group2_scans{end+1} = contrast_img; %#ok<AGROW>
+            group2_scans{end+1} = contrast_img; 
         end
     end
 
@@ -95,9 +95,9 @@ function [peakTable, T] = spm_2level_gat(train_subject_ids, sphere_radius, outpu
         if isempty(idx)
             error('Subject %s (numeric ID %d) not found in demo.ID', sub_id, numeric_id);
         end
-        SEX(end+1, 1) = demo.SEX(idx); %#ok<AGROW>
-        EDU(end+1, 1) = demo.EDU(idx); %#ok<AGROW>
-        AGE(end+1, 1) = demo.AGE(idx); %#ok<AGROW>
+        SEX(end+1, 1) = demo.SEX(idx); 
+        EDU(end+1, 1) = demo.EDU(idx); 
+        AGE(end+1, 1) = demo.AGE(idx); 
     end
 
     % ===================== 2. Two-sample t-test ==========================
@@ -198,8 +198,8 @@ function [peakTable, T] = spm_2level_gat(train_subject_ids, sphere_radius, outpu
             end
 
             if is_far
-                coords_mm(:, end+1) = coord_mm; %#ok<AGROW>
-                peakList = [peakList; coord_mm', Zmax(this_vox)]; %#ok<AGROW>
+                coords_mm(:, end+1) = coord_mm; 
+                peakList = [peakList; coord_mm', Zmax(this_vox)]; 
             end
             if size(coords_mm, 2) == max_peaks_per_cluster; break; end
         end

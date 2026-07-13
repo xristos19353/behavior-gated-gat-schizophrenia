@@ -51,7 +51,7 @@ function flag = mask_merged_rois_with_aal_gat(merged_roi_file, atlas_file, ...
 
         if isempty(overlapping_regions)
             fprintf('Warning: ROI %d does not overlap any parcel. Skipping.\n', roi_label);
-            roi_atlas_mapping(end+1, 1:4) = {roi_label, 'No overlap', '0%', 0}; %#ok<AGROW>
+            roi_atlas_mapping(end+1, 1:4) = {roi_label, 'No overlap', '0%', 0}; 
             continue;
         end
 
@@ -77,7 +77,7 @@ function flag = mask_merged_rois_with_aal_gat(merged_roi_file, atlas_file, ...
                 end
 
                 roi_atlas_mapping(end+1, 1:4) = ...
-                    {roi_label, region_name, sprintf('%.2f%%', overlap_percentage), overlap_voxels}; %#ok<AGROW>
+                    {roi_label, region_name, sprintf('%.2f%%', overlap_percentage), overlap_voxels}; 
 
                 if isKey(atlas_roi_mapping, region_label)
                     atlas_roi_mapping(region_label) = atlas_roi_mapping(region_label) + constrained_roi;
@@ -86,7 +86,7 @@ function flag = mask_merged_rois_with_aal_gat(merged_roi_file, atlas_file, ...
                 end
 
                 final_roi_atlas_mapping(end+1, 1:5) = ...
-                    {roi_label, new_roi_label, region_label, region_name, overlap_voxels}; %#ok<AGROW>
+                    {roi_label, new_roi_label, region_label, region_name, overlap_voxels}; 
             end
         end
     end
@@ -146,7 +146,7 @@ function atlas_labels = read_atlas_labels(atlas_labels_file)
     while ~feof(fid)
         line = fgetl(fid);
         if ischar(line)
-            atlas_labels{end+1} = strtrim(line); %#ok<AGROW>
+            atlas_labels{end+1} = strtrim(line); 
         end
     end
     fclose(fid);

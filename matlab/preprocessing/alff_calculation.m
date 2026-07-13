@@ -28,7 +28,7 @@ function alff_calculation()
             end
 
             Y_bold = S.Y_bold;
-            V_bold = S.V_bold; %#ok<NASGU>
+            V_bold = S.V_bold; 
             T_len  = size(Y_bold, 4);
 
             % Reshape to voxels x time and replace NaNs with the voxel mean.
@@ -64,7 +64,7 @@ function alff_calculation()
                 continue;
             end
 
-            ALFF_voxel_z = (ALFF_voxel - ALFF_mean) / ALFF_std; %#ok<NASGU>
+            ALFF_voxel_z = (ALFF_voxel - ALFF_mean) / ALFF_std; 
             save(file_path, 'Y_bold', 'V_bold', 'ALFF_voxel_z', '-v7.3');
             fprintf('DONE: %s\n', mat_files(k).name);
 

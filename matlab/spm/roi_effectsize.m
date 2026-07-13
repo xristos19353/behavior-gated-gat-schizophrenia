@@ -109,7 +109,7 @@ function newTable = roi_effectsize(roi_labels_all)
                               total_gmd, total_wmd, ...
                               'VariableNames', {'Subject', 'ROI_Label', ...
                                                 'MeanEffectSize', 'GMD', 'WMD'});
-            roi_effect_size_table = [roi_effect_size_table; new_entry]; %#ok<AGROW>
+            roi_effect_size_table = [roi_effect_size_table; new_entry]; 
         end
 
         % --- Behavioural metrics -----------------------------------------
@@ -129,7 +129,7 @@ function newTable = roi_effectsize(roi_labels_all)
             'VariableNames', matlab.lang.makeValidName(metric_names));
         sub_data.Subject = {subject_id};
         sub_data.Group   = group;
-        behavioral_data_table = [behavioral_data_table; sub_data]; %#ok<AGROW>
+        behavioral_data_table = [behavioral_data_table; sub_data]; 
     end
 
     % ===================== 2. Z-score effect sizes per ROI ================

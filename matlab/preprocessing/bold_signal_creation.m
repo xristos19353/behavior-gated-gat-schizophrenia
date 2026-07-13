@@ -27,7 +27,7 @@ function bold_signal_creation()
 
         [~, fname] = fileparts(subject_dirs(s).name);
         V_bold = spm_vol(bold_file);
-        Y_bold = single(spm_read_vols(V_bold)); %#ok<NASGU>
+        Y_bold = single(spm_read_vols(V_bold));
 
         save(fullfile(bold_dir, [fname '.mat']), 'V_bold', 'Y_bold', '-v7.3');
         fprintf('Saved subject %d: %s\n', s, fname);
