@@ -1,9 +1,9 @@
-function flag = mask_merged_rois_with_aal_gat(merged_roi_file, atlas_file, ...
+function flag = mask_merged_rois_with_atlas_gat(merged_roi_file, atlas_file, ...
     atlas_labels_file, output_file, output_csv, output_csv_final, ...
     overlap_per, thresholded_activation_file, activation_threshold)
-% MASK_MERGED_ROIS_WITH_AAL_GCN  Refine peak ROIs against an anatomical atlas.
+% MASK_MERGED_ROIS_WITH_ATLAS_GAT Refine peak ROIs against an anatomical atlas.
 %
-%   FLAG = MASK_MERGED_ROIS_WITH_AAL_GCN(...) splits each merged peak ROI by the
+%   FLAG = MASK_MERGED_ROIS_WITH_ATLAS_GAT(...) splits each merged peak ROI by the
 %   anatomical parcellation it overlaps, keeps only sub-ROIs whose overlap with
 %   a parcel exceeds OVERLAP_PER percent (and at least 3 voxels), merges
 %   sub-ROIs that fall in the same parcel, and finally masks the result with a

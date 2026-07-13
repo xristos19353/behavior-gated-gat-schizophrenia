@@ -13,7 +13,7 @@ function [peakTable, T] = spm_2level_gat(train_subject_ids, sphere_radius, outpu
 %     2. Threshold the contrast (p < 0.001 uncorrected, k = 20 voxels) and
 %        detect cluster peaks (up to 3 per cluster, >= 8 mm apart).
 %     3. Build spherical ROIs around the peaks and refine them against an
-%        anatomical atlas (see spm_roi_extraction_gat / mask_merged_rois_with_aal_gat).
+%        anatomical atlas (see spm_roi_extraction_gat / mask_merged_rois_with_atlas_gat).
 %     4. Extract subject-specific peak ROIs (process_subject_rois_with_marsbar_gat),
 %        compute connectivity + node metrics (adjacency_matrix_calc) and effect
 %        sizes / tissue density / behaviour (roi_effectsize).
@@ -215,7 +215,7 @@ function [peakTable, T] = spm_2level_gat(train_subject_ids, sphere_radius, outpu
     % ===================== 4. ROI definition and features ================
     spm_roi_extraction_gat(peakTable, sphere_radius);
 
-    flag = mask_merged_rois_with_aal_gat( ...
+    flag = mask_merged_rois_with_atlas_gat( ...
         fullfile(cfg.group_rois_dir, 'merged_roi.nii'), ...
         cfg.parcellation_atlas, ...
         cfg.parcellation_labels, ...

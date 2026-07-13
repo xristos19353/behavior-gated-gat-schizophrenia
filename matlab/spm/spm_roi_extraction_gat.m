@@ -1,7 +1,7 @@
 function spm_roi_extraction_gat(peakTable, radius)
 % SPM_ROI_EXTRACTION_GCN  Build a merged ROI image from second-level peaks.
 %
-%   SPM_ROI_EXTRACTION_GCN(PEAKTABLE, RADIUS) draws a MarsBaR sphere of the
+%   SPM_ROI_EXTRACTION_GAT(PEAKTABLE, RADIUS) draws a MarsBaR sphere of the
 %   given RADIUS (mm) around each peak coordinate in PEAKTABLE (columns X,Y,Z),
 %   converts each sphere to a NIfTI image, and merges them into a single
 %   labelled image (merged_roi.nii) in the group ROI directory defined by
